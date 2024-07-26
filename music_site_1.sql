@@ -11,13 +11,14 @@ CREATE TABLE IF NOT EXISTS Author (
 CREATE TABLE IF NOT EXISTS Album (
 	id SERIAL PRIMARY KEY,
 	name_album TEXT NOT NULL,
-	date_of_issue date NOT NULL 
+	date_of_issue date NOT NULL CHECK (date_of_issue > 1995)
 );
 
 CREATE TABLE IF NOT EXISTS Trek (
-	id INTEGER PRIMARY KEY REFERENCES Album(id),
+	id SERIAL PRIMARY KEY,
+	album_id integer REFERENCES Album(id),
 	name_trek TEXT, 
-	duration_trek integer 
+	duration_trek integer CHECK (duration_trek < 180)
 );
 
 CREATE TABLE IF NOT EXISTS GenresAuthor (
@@ -37,6 +38,12 @@ CREATE TABLE IF NOT EXISTS Collection(
 	name_collection TEXT NOT NULL,
 	year_of_issue date NOT NULL,
 	trek_id integer NOT NULL REFERENCES Trek(id)
+);
+
+CREATE TABLE IF NOT EXISTS TrekCollection(
+	trek_id INTEGER REFERENCES Trek(id),
+	collection_id INTEGER REFERENCES Collection(id),
+	CONSTRAINT tc PRIMARY KEY (trek_id, collection_id)
 );
 
 DROP TABLE IF EXISTS albumtrek 
